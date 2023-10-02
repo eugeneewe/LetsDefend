@@ -1,4 +1,4 @@
-# PowerShell Script
+# PowerShell Script - LetsDefend Challenge
 
 ### Summary
 
